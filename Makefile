@@ -1,21 +1,18 @@
 .PHONY: help
 .DEFAULT_GOAL := help
 
-help:
-	python -m n2t --help
-
 install: ## Install requirements
 	pip install -r requirements.txt
 
 format: ## Run code formatters
-	isort tests
-	black tests
+	isort app tests
+	black app tests
 
 lint: ## Run code linters
-	isort --check tests
-	black --check tests
-	flake8 tests
-	mypy tests
+	isort --check app tests
+	black --check app tests
+	flake8 app tests
+	mypy app tests
 
 test:  ## Run tests with coverage
 	pytest --cov
