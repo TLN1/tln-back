@@ -1,0 +1,13 @@
+black
+isort
+mypy
+flake8
+requests
+pytest
+fastapi
+starlette
+uvicorn[standard]
+coverage
+types-orjson
+types-requests
+types-ujson
