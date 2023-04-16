@@ -1,6 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, Depends
-from fastapi.openapi.models import Response
+from fastapi import Depends, FastAPI, Response
 
 from app.core.core import Core
 
@@ -21,8 +20,7 @@ def get_core() -> Core:
         500: {},
     },
 )
-def register_user(response: Response,
-                  core: Core = Depends(get_core)) -> None:
+def register_user(response: Response, core: Core = Depends(get_core)) -> None:
     """
     - Registers user
     """
