@@ -1,7 +1,9 @@
 import uvicorn
 from fastapi import Depends, FastAPI, Response
 
+from app.core.constants import STATUS_HTTP_MAPPING
 from app.core.core import Core
+from app.core.request import RequestRegister
 
 app = FastAPI()
 
@@ -14,15 +16,19 @@ def get_core() -> Core:
 
 
 @app.post(
-    "/users",
+    "/register",
     responses={
         201: {},
         500: {},
     },
 )
-def register_user(response: Response, core: Core = Depends(get_core)) -> None:
+def register(
+    response: Response, username: str, password: str, core: Core = Depends(get_core)
+) -> None:
     """
     - Registers user
+    - Returns token for subsequent requests
     """
 
-    response.status_code = 200
+    register_response = core.register(RequestRegister(username, password))
+    response.status_code = STATUS_HTTP_MAPPING[register_response.status_code]
