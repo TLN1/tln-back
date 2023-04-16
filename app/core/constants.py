@@ -1,5 +1,5 @@
 class Status:
-    STATUS_CODE_DEFAULT = 0
+    OK = 0
 
 
 class HttpResponseCode:
@@ -9,5 +9,5 @@ class HttpResponseCode:
 
 
 STATUS_HTTP_MAPPING = {
-    Status.STATUS_CODE_DEFAULT: HttpResponseCode.HTTP_RESPONSE_SUCCESS,
+    Status.OK: HttpResponseCode.HTTP_RESPONSE_SUCCESS,
 }

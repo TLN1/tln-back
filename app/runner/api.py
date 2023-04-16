@@ -4,6 +4,9 @@ from fastapi import Depends, FastAPI, Response
 from app.core.constants import STATUS_HTTP_MAPPING
 from app.core.core import Core
 from app.core.request import RequestRegister
+from app.core.response import ResponseGeneric
+from app.infra.repository.account import InMemoryRepositoryAccount
+from app.infra.token import Token
 
 app = FastAPI()
 
@@ -12,7 +15,10 @@ if __name__ == "__main__":
 
 
 def get_core() -> Core:
-    return Core()
+    return Core(
+        account_repository=InMemoryRepositoryAccount(),
+        token_generator=Token.generate_token,
+    )
 
 
 @app.post(
@@ -24,7 +30,7 @@ def get_core() -> Core:
 )
 def register(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
-) -> None:
+) -> ResponseGeneric:
     """
     - Registers user
     - Returns token for subsequent requests
@@ -32,3 +38,4 @@ def register(
 
     register_response = core.register(RequestRegister(username, password))
     response.status_code = STATUS_HTTP_MAPPING[register_response.status_code]
+    return register_response
