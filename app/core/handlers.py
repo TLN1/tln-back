@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Callable, Optional, Protocol
 
@@ -24,6 +24,7 @@ class BaseHandler(ABC, IHandle):
         self._next_handler = handler
         return handler
 
+    @abstractmethod
     def handle(self) -> CoreResponse:
         if self._next_handler:
             return self._next_handler.handle()
@@ -47,9 +48,9 @@ class AccountRegisterHandler(BaseHandler):
             self.account_repository.get_account(self.username), token
         )
         # TODO: return token
-        return CoreResponse()
+        return super().handle()
 
 
 class NoHandler(BaseHandler):
     def handle(self) -> CoreResponse:
-        return CoreResponse()
+        return super().handle()
