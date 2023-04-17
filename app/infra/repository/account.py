@@ -8,7 +8,11 @@ from app.core.repository.account import IRepositoryAccount
 class InMemoryRepositoryAccount(IRepositoryAccount):
     accounts: list[Account] = field(default_factory=list)
 
-    def create_account(
-        self, username: str, password: str, token: str, token_is_valid: bool
-    ) -> None:
-        self.accounts.append(Account(username, password, token, token_is_valid))
+    def create_account(self, username: str, password: str) -> None:
+        self.accounts.append(Account(len(self.accounts) + 1, username, password))
+
+    def get_account(self, username: str) -> Account:
+        for account in self.accounts:
+            if account.username == username:
+                return account
+        raise RuntimeError("Account not found")

@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import Depends, FastAPI, Response
 
+from app.core.application_context import InMemoryApplicationContext
 from app.core.constants import STATUS_HTTP_MAPPING
 from app.core.core import Core
 from app.core.request import RequestRegister
@@ -15,9 +16,13 @@ if __name__ == "__main__":
 
 
 def get_core() -> Core:
+    account_repository = InMemoryRepositoryAccount()
     return Core(
-        account_repository=InMemoryRepositoryAccount(),
+        account_repository=account_repository,
         token_generator=Token.generate_token,
+        application_context=InMemoryApplicationContext(
+            account_repository=account_repository
+        ),
     )
 
 
