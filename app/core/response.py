@@ -4,10 +4,17 @@ from app.core.constants import Status
 
 
 @dataclass
-class ResponseGeneric:
-    status_code: int = Status.OK
+class ResponseContent:
+    pass
 
 
 @dataclass
-class ResponseRegister(ResponseGeneric):
+class RegisterResponse(ResponseContent):
     pass
+
+
+@dataclass
+class CoreResponse:
+    message: str = ""
+    status: Status = Status.OK
+    response_content: ResponseContent = ResponseContent()
