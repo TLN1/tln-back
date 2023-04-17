@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import Callable
 
+from app.core.handlers import AccountRegisterHandler, NoHandler
 from app.core.repository.account import IRepositoryAccount
 from app.core.request import RequestRegister
-from app.core.response import ResponseRegister
+from app.core.response import ResponseRegister, ResponseGeneric
 
 
 @dataclass
@@ -12,8 +13,10 @@ class Core:
 
     token_generator: Callable[[], str]
 
-    def register(self, request: RequestRegister) -> ResponseRegister:
-        self.account_repository.create_account(
-            request.username, request.password, self.token_generator(), True
-        )
-        return ResponseRegister()
+    def register(self, request: RequestRegister) -> ResponseGeneric:
+        handler = AccountRegisterHandler(next_handler=NoHandler(),
+                                         account_repository=self.account_repository,
+                                         token_generator=self.token_generator,
+                                         username=request.username,
+                                         password=request.password)
+        return handler.handle()
