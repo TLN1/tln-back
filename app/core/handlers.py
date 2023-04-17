@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, Optional, Protocol
+from typing import Callable, Protocol
 
 from app.core.application_context import IApplicationContext
 from app.core.repository.account import IRepositoryAccount
@@ -17,8 +17,16 @@ class IHandle(Protocol):
         pass
 
 
+class NoHandler(IHandle):
+    def handle(self) -> CoreResponse:
+        return CoreResponse()
+
+    def set_next(self, handler: IHandle) -> IHandle:
+        return handler
+
+
 class BaseHandler(ABC, IHandle):
-    _next_handler: Optional[IHandle] = None
+    _next_handler: IHandle = NoHandler()
 
     def set_next(self, handler: IHandle) -> IHandle:
         self._next_handler = handler
@@ -26,9 +34,7 @@ class BaseHandler(ABC, IHandle):
 
     @abstractmethod
     def handle(self) -> CoreResponse:
-        if self._next_handler:
-            return self._next_handler.handle()
-        return CoreResponse()
+        return self._next_handler.handle()
 
 
 @dataclass
@@ -48,9 +54,4 @@ class AccountRegisterHandler(BaseHandler):
             self.account_repository.get_account(self.username), token
         )
         # TODO: return token
-        return super().handle()
-
-
-class NoHandler(BaseHandler):
-    def handle(self) -> CoreResponse:
         return super().handle()
