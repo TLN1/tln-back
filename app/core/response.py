@@ -10,7 +10,7 @@ class ResponseContent:
 
 @dataclass
 class RegisterResponse(ResponseContent):
-    pass
+    token: str
 
 
 @dataclass

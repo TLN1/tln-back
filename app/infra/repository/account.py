@@ -1,18 +1,25 @@
 from dataclasses import dataclass, field
+from typing import Optional
 
 from app.core.models import Account
-from app.core.repository.account import IRepositoryAccount
+from app.core.repository.account import IAccountRepository
 
 
 @dataclass
-class InMemoryRepositoryAccount(IRepositoryAccount):
-    accounts: list[Account] = field(default_factory=list)
+class InMemoryAccountRepository(IAccountRepository):
+    accounts: dict[str, Account] = field(default_factory=dict)
 
-    def create_account(self, username: str, password: str) -> None:
-        self.accounts.append(Account(len(self.accounts) + 1, username, password))
+    def create_account(self, account: Account) -> bool:
+        self.accounts[account.username] = Account(
+            id=len(self.accounts) + 1,
+            username=account.username,
+            password=account.password,
+        )
 
-    def get_account(self, username: str) -> Account:
-        for account in self.accounts:
-            if account.username == username:
-                return account
-        raise RuntimeError("Account not found")
+        return True
+
+    def get_account(self, username: str) -> Optional[Account]:
+        return self.accounts.get(username)
+
+    def has_account(self, username: str) -> bool:
+        return username in self.accounts

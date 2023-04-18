@@ -2,6 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass
-class RequestRegister:
+class RegisterRequest:
     username: str
     password: str
