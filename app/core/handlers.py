@@ -8,6 +8,7 @@ from app.core.application_context import IApplicationContext
 from app.core.constants import Message, Status
 from app.core.models import Account
 from app.core.repository.account import IAccountRepository
+from app.core.repository.account import IRepositoryAccount
 from app.core.response import CoreResponse, RegisterResponse
 
 

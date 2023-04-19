@@ -7,6 +7,9 @@ from app.core.core import Core
 from app.core.request import RegisterRequest
 from app.core.response import CoreResponse, ResponseContent
 from app.infra.repository.account import InMemoryAccountRepository
+from app.core.request import RequestRegister
+from app.core.response import RegisterResponse, ResponseContent
+from app.infra.repository.account import InMemoryRepositoryAccount
 from app.infra.token import Token
 
 app = FastAPI()
@@ -45,6 +48,7 @@ def handle_response_status_code(
         201: {},
         500: {},
     },
+    response_model=RegisterResponse,
 )
 def register(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
