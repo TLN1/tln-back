@@ -30,9 +30,8 @@ class InMemoryApplicationContext(IApplicationContext):
                 return True
         return False
 
-    def get_account(self, token: str) -> Optional[Account]:
-        # use username as token for now
-        return self.account_repository.get_account(token)
+    def get_account(self, token: str) -> Account:
+        return self.active_accounts[token]
 
     def login_user(self, account: Account, token: str) -> None:
         self.active_accounts[token] = account
