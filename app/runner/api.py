@@ -5,7 +5,7 @@ from app.core.application_context import InMemoryApplicationContext
 from app.core.constants import STATUS_HTTP_MAPPING
 from app.core.core import Core
 from app.core.request import RequestRegister
-from app.core.response import ResponseContent
+from app.core.response import RegisterResponse, ResponseContent
 from app.infra.repository.account import InMemoryRepositoryAccount
 from app.infra.token import Token
 
@@ -32,6 +32,7 @@ def get_core() -> Core:
         201: {},
         500: {},
     },
+    response_model=RegisterResponse,
 )
 def register(
     response: Response, username: str, password: str, core: Core = Depends(get_core)

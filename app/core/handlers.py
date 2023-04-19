@@ -6,7 +6,7 @@ from typing import Callable, Protocol
 
 from app.core.application_context import IApplicationContext
 from app.core.repository.account import IRepositoryAccount
-from app.core.response import CoreResponse
+from app.core.response import CoreResponse, RegisterResponse
 
 
 class IHandle(Protocol):
@@ -50,8 +50,7 @@ class AccountRegisterHandler(BaseHandler):
         self.account_repository.create_account(
             username=self.username, password=self.password
         )  # TODO: return boolean
-        self.application_context.log_user(
-            self.account_repository.get_account(self.username), token
-        )
-        # TODO: return token
-        return super().handle()
+        account = self.account_repository.get_account(self.username)
+        self.application_context.log_user(account, token)
+        return CoreResponse(response_content=RegisterResponse(token=token))
+        # return super().handle()
