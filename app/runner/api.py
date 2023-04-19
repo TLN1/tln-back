@@ -4,12 +4,9 @@ from fastapi import Depends, FastAPI, HTTPException, Response
 from app.core.application_context import InMemoryApplicationContext
 from app.core.constants import STATUS_HTTP_MAPPING
 from app.core.core import Core
-from app.core.request import RegisterRequest
-from app.core.response import CoreResponse, ResponseContent
+from app.core.request import LoginRequest, RegisterRequest
+from app.core.response import CoreResponse, ResponseContent, TokenResponse
 from app.infra.repository.account import InMemoryAccountRepository
-from app.core.request import RequestRegister
-from app.core.response import RegisterResponse, ResponseContent
-from app.infra.repository.account import InMemoryRepositoryAccount
 from app.infra.token import Token
 
 app = FastAPI()
@@ -48,7 +45,7 @@ def handle_response_status_code(
         201: {},
         500: {},
     },
-    response_model=RegisterResponse,
+    response_model=TokenResponse,
 )
 def register(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
@@ -58,7 +55,27 @@ def register(
     - Returns token for subsequent requests
     """
 
-    register_response = core.register(RegisterRequest(username, password))
-    handle_response_status_code(response, register_response)
-    print(register_response.response_content)
-    return register_response.response_content
+    token_response = core.register(RegisterRequest(username, password))
+    handle_response_status_code(response, token_response)
+    return token_response.response_content
+
+
+@app.post(
+    "/login",
+    responses={
+        201: {},
+        500: {},
+    },
+    response_model=TokenResponse,
+)
+def login(
+    response: Response, username: str, password: str, core: Core = Depends(get_core)
+) -> ResponseContent:
+    """
+    - Logs user in
+    - Returns token for subsequent requests
+    """
+
+    token_response = core.login(LoginRequest(username, password))
+    handle_response_status_code(response, token_response)
+    return token_response.response_content
