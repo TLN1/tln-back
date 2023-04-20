@@ -1,12 +1,13 @@
-from enum import IntEnum
+from enum import IntEnum, auto
 
 
 class Status(IntEnum):
-    ACCOUNT_DOES_NOT_EXIST = 5
-    OK = 0
-    ACCOUNT_ALREADY_EXISTS = 1
-    ACCOUNT_REGISTER_ERROR = 2
-    USER_ALREADY_LOGGED_IN = 4
+    OK = auto()
+    ACCOUNT_ALREADY_EXISTS = auto()
+    ACCOUNT_REGISTER_ERROR = auto()
+    USER_ALREADY_LOGGED_IN = auto()
+    ACCOUNT_DOES_NOT_EXIST = auto()
+    USER_NOT_LOGGED_IN = auto()
 
 
 class Message:
@@ -14,6 +15,7 @@ class Message:
     ACCOUNT_REGISTER_ERROR = "account registration error"
     USER_ALREADY_LOGGED_IN = "user already logged in"
     ACCOUNT_DOES_NOT_EXIST = "account does not exist"
+    USER_NOT_LOGGED_IN = "user not logged in"
 
 
 class HttpResponseCode(IntEnum):
@@ -29,4 +31,5 @@ STATUS_HTTP_MAPPING = {
     Status.ACCOUNT_REGISTER_ERROR: HttpResponseCode.SERVER_ERROR,
     Status.USER_ALREADY_LOGGED_IN: HttpResponseCode.BAD_REQUEST,
     Status.ACCOUNT_DOES_NOT_EXIST: HttpResponseCode.BAD_REQUEST,
+    Status.USER_NOT_LOGGED_IN: HttpResponseCode.BAD_REQUEST,
 }

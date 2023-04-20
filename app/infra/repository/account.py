@@ -21,5 +21,7 @@ class InMemoryAccountRepository(IAccountRepository):
     def get_account(self, username: str) -> Optional[Account]:
         return self.accounts.get(username)
 
-    def has_account(self, username: str) -> bool:
-        return username in self.accounts
+    def has_account(self, username: str, password: str) -> bool:
+        return (
+            username in self.accounts and self.accounts[username].password == password
+        )

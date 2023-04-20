@@ -11,3 +11,8 @@ class RegisterRequest:
 class LoginRequest:
     username: str
     password: str
+
+
+@dataclass
+class LogoutRequest:
+    token: str

@@ -8,7 +8,7 @@ from app.core.application_context import IApplicationContext
 from app.core.constants import Message, Status
 from app.core.models import Account
 from app.core.repository.account import IAccountRepository
-from app.core.response import CoreResponse, TokenResponse
+from app.core.responses import CoreResponse, TokenResponse
 
 
 class IHandle(Protocol):
@@ -43,9 +43,12 @@ class BaseHandler(ABC, IHandle):
 class AccountDoesNotExistHandler(BaseHandler):
     account_repository: IAccountRepository
     username: str
+    password: str
 
     def handle(self) -> CoreResponse:
-        if self.account_repository.has_account(self.username):
+        if self.account_repository.has_account(
+            username=self.username, password=self.password
+        ):
             return CoreResponse(
                 status=Status.ACCOUNT_ALREADY_EXISTS,
                 message=Message.ACCOUNT_ALREADY_EXISTS,
@@ -58,9 +61,12 @@ class AccountDoesNotExistHandler(BaseHandler):
 class AccountExistsHandler(BaseHandler):
     account_repository: IAccountRepository
     username: str
+    password: str
 
     def handle(self) -> CoreResponse:
-        if not self.account_repository.has_account(self.username):
+        if not self.account_repository.has_account(
+            username=self.username, password=self.password
+        ):
             return CoreResponse(
                 status=Status.ACCOUNT_DOES_NOT_EXIST,
                 message=Message.ACCOUNT_DOES_NOT_EXIST,
@@ -95,16 +101,45 @@ class LoginHandler(BaseHandler):
     password: str
 
     def handle(self) -> CoreResponse:
-        token = self.token_generator()
-
         if self.application_context.is_user_logged_in(self.username):
             return CoreResponse(
                 status=Status.USER_ALREADY_LOGGED_IN,
                 message=Message.USER_ALREADY_LOGGED_IN,
             )
 
+        token = self.token_generator()
         self.application_context.login_user(
             account=Account(username=self.username, password=self.password), token=token
         )
 
         return CoreResponse(response_content=TokenResponse(token=token))
+
+
+@dataclass
+class UserLoggedInHandler(BaseHandler):
+    application_context: IApplicationContext
+    token: str
+
+    def handle(self) -> CoreResponse:
+        not_logged_in_response = CoreResponse(
+            status=Status.USER_NOT_LOGGED_IN,
+            message=Message.USER_NOT_LOGGED_IN,
+        )
+        account = self.application_context.get_account(token=self.token)
+        if account is None:
+            return not_logged_in_response
+
+        if not self.application_context.is_user_logged_in(username=account.username):
+            return not_logged_in_response
+
+        return super().handle()
+
+
+@dataclass
+class LogoutHandler(BaseHandler):
+    application_context: IApplicationContext
+    token: str
+
+    def handle(self) -> CoreResponse:
+        self.application_context.logout_user(token=self.token)
+        return super().handle()

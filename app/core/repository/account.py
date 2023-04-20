@@ -10,5 +10,5 @@ class IAccountRepository(Protocol):
     def get_account(self, username: str) -> Optional[Account]:
         pass
 
-    def has_account(self, username: str) -> bool:
+    def has_account(self, username: str, password: str) -> bool:
         pass

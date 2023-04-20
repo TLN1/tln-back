@@ -7,11 +7,13 @@ from app.core.handlers import (
     AccountExistsHandler,
     AccountRegisterHandler,
     LoginHandler,
+    LogoutHandler,
     NoHandler,
+    UserLoggedInHandler,
 )
 from app.core.repository.account import IAccountRepository
-from app.core.request import LoginRequest, RegisterRequest
-from app.core.response import CoreResponse
+from app.core.requests import LoginRequest, LogoutRequest, RegisterRequest
+from app.core.responses import CoreResponse
 
 
 @dataclass
@@ -22,7 +24,9 @@ class Core:
 
     def register(self, request: RegisterRequest) -> CoreResponse:
         handler = AccountDoesNotExistHandler(
-            account_repository=self.account_repository, username=request.username
+            account_repository=self.account_repository,
+            username=request.username,
+            password=request.password,
         )
         register_handler = AccountRegisterHandler(
             account_repository=self.account_repository,
@@ -41,7 +45,9 @@ class Core:
 
     def login(self, request: LoginRequest) -> CoreResponse:
         handler = AccountExistsHandler(
-            account_repository=self.account_repository, username=request.username
+            account_repository=self.account_repository,
+            username=request.username,
+            password=request.password,
         )
         login_handler = LoginHandler(
             application_context=self.application_context,
@@ -51,4 +57,15 @@ class Core:
         )
 
         handler.set_next(login_handler).set_next(NoHandler())
+        return handler.handle()
+
+    def logout(self, request: LogoutRequest) -> CoreResponse:
+        handler = UserLoggedInHandler(
+            application_context=self.application_context, token=request.token
+        )
+        logout_handler = LogoutHandler(
+            application_context=self.application_context, token=request.token
+        )
+
+        handler.set_next(logout_handler).set_next(NoHandler())
         return handler.handle()

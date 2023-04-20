@@ -1,11 +1,11 @@
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException, Response
 
-from app.core.application_context import InMemoryApplicationContext
 from app.core.constants import STATUS_HTTP_MAPPING
 from app.core.core import Core
-from app.core.request import LoginRequest, RegisterRequest
-from app.core.response import CoreResponse, ResponseContent, TokenResponse
+from app.core.requests import LoginRequest, LogoutRequest, RegisterRequest
+from app.core.responses import CoreResponse, ResponseContent, TokenResponse
+from app.infra.application_context import InMemoryApplicationContext
 from app.infra.repository.account import InMemoryAccountRepository
 from app.infra.token import Token
 
@@ -15,9 +15,7 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 in_memory_account_repository = InMemoryAccountRepository()
-in_memory_application_context = InMemoryApplicationContext(
-    account_repository=in_memory_account_repository
-)
+in_memory_application_context = InMemoryApplicationContext()
 
 
 def get_core() -> Core:
@@ -62,10 +60,6 @@ def register(
 
 @app.post(
     "/login",
-    responses={
-        201: {},
-        500: {},
-    },
     response_model=TokenResponse,
 )
 def login(
@@ -79,3 +73,19 @@ def login(
     token_response = core.login(LoginRequest(username, password))
     handle_response_status_code(response, token_response)
     return token_response.response_content
+
+
+@app.post(
+    "/logout",
+    response_model=ResponseContent,
+)
+def logout(
+    response: Response, token: str, core: Core = Depends(get_core)
+) -> ResponseContent:
+    """
+    - Logs user out
+    """
+
+    logout_response = core.logout(LogoutRequest(token))
+    handle_response_status_code(response, logout_response)
+    return logout_response.response_content
