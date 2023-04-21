@@ -1,11 +1,14 @@
-from typing import Protocol
+from typing import Optional, Protocol
 
 from app.core.models import Account
 
 
-class IRepositoryAccount(Protocol):
-    def create_account(self, username: str, password: str) -> None:
+class IAccountRepository(Protocol):
+    def create_account(self, account: Account) -> bool:
         pass
 
-    def get_account(self, username: str) -> Account:
+    def get_account(self, username: str) -> Optional[Account]:
+        pass
+
+    def has_account(self, username: str, password: str) -> bool:
         pass

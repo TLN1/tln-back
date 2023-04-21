@@ -9,7 +9,7 @@ class ResponseContent:
 
 
 @dataclass
-class RegisterResponse(ResponseContent):
+class TokenResponse(ResponseContent):
     token: str
 
 
