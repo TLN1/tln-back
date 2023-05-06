@@ -5,6 +5,7 @@ from app.core.constants import STATUS_HTTP_MAPPING
 from app.core.core import Core
 from app.core.requests import LoginRequest, LogoutRequest, RegisterRequest
 from app.core.responses import CoreResponse, ResponseContent, TokenResponse
+from app.core.services.account_service import AccountService
 from app.infra.application_context import InMemoryApplicationContext
 from app.infra.repository.account import InMemoryAccountRepository
 from app.infra.token import Token
@@ -20,9 +21,11 @@ in_memory_application_context = InMemoryApplicationContext()
 
 def get_core() -> Core:
     return Core(
-        account_repository=in_memory_account_repository,
-        token_generator=Token.generate_token,
-        application_context=in_memory_application_context,
+        account_service=AccountService(
+            account_repository=in_memory_account_repository,
+            application_context=in_memory_application_context,
+            token_generator=Token.generate_token,
+        )
     )
 
 
@@ -33,7 +36,7 @@ def handle_response_status_code(
 
     if response.status_code // 100 != 2:
         raise HTTPException(
-            status_code=response.status_code, detail=core_response.message
+            status_code=response.status_code, detail=core_response.status.value
         )
 
 
@@ -58,10 +61,7 @@ def register(
     return token_response.response_content
 
 
-@app.post(
-    "/login",
-    response_model=TokenResponse,
-)
+@app.post("/login", response_model=TokenResponse)
 def login(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
 ) -> ResponseContent:
@@ -75,10 +75,7 @@ def login(
     return token_response.response_content
 
 
-@app.post(
-    "/logout",
-    response_model=ResponseContent,
-)
+@app.post("/logout", response_model=ResponseContent)
 def logout(
     response: Response, token: str, core: Core = Depends(get_core)
 ) -> ResponseContent:

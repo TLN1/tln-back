@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+# TODO maybe implement builder pattern for building requests
+
 
 @dataclass
 class RegisterRequest:
