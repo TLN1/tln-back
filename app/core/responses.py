@@ -15,6 +15,5 @@ class TokenResponse(ResponseContent):
 
 @dataclass
 class CoreResponse:
-    message: str = ""
     status: Status = Status.OK
     response_content: ResponseContent = ResponseContent()

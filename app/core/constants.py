@@ -1,16 +1,8 @@
-from enum import IntEnum, auto
+from enum import Enum, IntEnum
 
 
-class Status(IntEnum):
-    OK = auto()
-    ACCOUNT_ALREADY_EXISTS = auto()
-    ACCOUNT_REGISTER_ERROR = auto()
-    USER_ALREADY_LOGGED_IN = auto()
-    ACCOUNT_DOES_NOT_EXIST = auto()
-    USER_NOT_LOGGED_IN = auto()
-
-
-class Message:
+class Status(Enum):
+    OK = "ok"
     ACCOUNT_ALREADY_EXISTS = "account already exists"
     ACCOUNT_REGISTER_ERROR = "account registration error"
     USER_ALREADY_LOGGED_IN = "user already logged in"

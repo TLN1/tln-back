@@ -1,16 +1,17 @@
 from typing import Optional, Protocol
 
-from app.core.models import Account
-
 
 class IApplicationContext(Protocol):
     def is_user_logged_in(self, username: str) -> bool:
         pass
 
-    def get_account(self, token: str) -> Optional[Account]:
+    def get_account(self, token: str) -> Optional[str]:
         pass
 
-    def login_user(self, account: Account, token: str) -> None:
+    def has_account(self, token: str) -> bool:
+        pass
+
+    def login_user(self, username: str, token: str) -> None:
         pass
 
     def logout_user(self, token: str) -> None:
