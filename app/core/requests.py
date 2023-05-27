@@ -1,6 +1,13 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
-from app.core.models import User
+from app.core.models import (
+    Benefit,
+    ExperienceLevel,
+    JobLocation,
+    JobType,
+    Requirement,
+    User,
+)
 
 # TODO maybe implement builder pattern for building requests
 
@@ -18,7 +25,7 @@ class LoginRequest:
 
 
 @dataclass
-class LogoutRequest:
+class TokenRequest:
     token: str
 
 
@@ -31,3 +38,42 @@ class GetUserRequest:
 class SetupUserRequest:
     username: str
     user: User
+
+
+@dataclass
+class LogoutRequest(TokenRequest):
+    pass
+
+
+@dataclass
+class CreateApplicationRequest(TokenRequest):
+    location: JobLocation = JobLocation.ON_SITE
+    job_type: JobType = JobType.FULL_TIME
+    experience_level: ExperienceLevel = ExperienceLevel.JUNIOR
+    requirements: list[Requirement] = field(default_factory=list)
+    benefits: list[Benefit] = field(default_factory=list)
+
+
+@dataclass
+class UpdateApplicationRequest(TokenRequest):
+    id: int
+    location: JobLocation = JobLocation.ON_SITE
+    job_type: JobType = JobType.FULL_TIME
+    experience_level: ExperienceLevel = ExperienceLevel.JUNIOR
+    requirements: list[Requirement] = field(default_factory=list)
+    benefits: list[Benefit] = field(default_factory=list)
+
+
+@dataclass
+class GetApplicationRequest(TokenRequest):
+    id: int
+
+
+@dataclass
+class ApplicationInteractionRequest(TokenRequest):
+    id: int
+
+
+@dataclass
+class DeleteApplicationRequest(TokenRequest):
+    id: int

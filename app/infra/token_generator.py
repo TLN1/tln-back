@@ -1,4 +1,4 @@
-class Token:
+class TokenGenerator:
     _i = 0
 
     @classmethod

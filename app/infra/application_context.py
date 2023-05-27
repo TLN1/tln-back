@@ -18,9 +18,6 @@ class InMemoryApplicationContext(IApplicationContext):
     def get_account(self, token: str) -> Optional[str]:
         return self.active_accounts.get(token)
 
-    def has_account(self, token: str) -> bool:
-        return self.get_account(token=token) is not None
-
     def login_user(self, username: str, token: str) -> None:
         self.active_accounts[token] = username
 
