@@ -8,6 +8,7 @@ class Status(Enum):
     USER_ALREADY_LOGGED_IN = "user already logged in"
     ACCOUNT_DOES_NOT_EXIST = "account does not exist"
     USER_NOT_LOGGED_IN = "user not logged in"
+    USER_SETUP_ERROR = "user setup error"
 
 
 class HttpResponseCode(IntEnum):

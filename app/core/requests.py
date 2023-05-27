@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from app.core.models import User
+
 # TODO maybe implement builder pattern for building requests
 
 
@@ -18,3 +20,14 @@ class LoginRequest:
 @dataclass
 class LogoutRequest:
     token: str
+
+
+@dataclass
+class GetUserRequest:
+    username: str
+
+
+@dataclass
+class SetupUserRequest:
+    username: str
+    user: User

@@ -1,19 +1,20 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from pydantic import BaseModel
 
 from app.core.constants import Status
+from app.core.models import User
 
 
-@dataclass
-class ResponseContent:
-    pass
-
-
-@dataclass
-class TokenResponse(ResponseContent):
+class TokenResponse(BaseModel):
     token: str
 
 
 @dataclass
 class CoreResponse:
     status: Status = Status.OK
-    response_content: ResponseContent = ResponseContent()
+    response_content: BaseModel = field(default_factory=BaseModel)
+
+
+class UserResponse(BaseModel):
+    user: User
