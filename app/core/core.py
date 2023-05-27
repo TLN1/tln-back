@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 
+from pydantic import BaseModel
+
 from app.core.constants import Status
+from app.core.models import ApplicationId, Token
 from app.core.requests import (
     CreateApplicationRequest,
     GetApplicationRequest,
@@ -8,13 +11,7 @@ from app.core.requests import (
     LogoutRequest,
     RegisterRequest,
 )
-from app.core.responses import (
-    ApplicationIdResponse,
-    ApplicationResponse,
-    CoreResponse,
-    ResponseContent,
-    TokenResponse,
-)
+from app.core.responses import CoreResponse
 from app.core.services.account_service import AccountService
 from app.core.services.application_service import ApplicationService
 
@@ -41,9 +38,7 @@ class Core:
             username=request.username, password=request.password
         )
 
-        token_response = (
-            ResponseContent() if token is None else TokenResponse(token=token)
-        )
+        token_response = BaseModel() if token is None else Token(token=token)
         return CoreResponse(status=status, response_content=token_response)
 
     def logout(self, request: LogoutRequest) -> CoreResponse:
@@ -61,9 +56,9 @@ class Core:
         )
 
         application_id_response = (
-            ResponseContent()
+            BaseModel()
             if application_id is None
-            else ApplicationIdResponse(application_id=application_id)
+            else ApplicationId(application_id=application_id)
         )
         return CoreResponse(status=status, response_content=application_id_response)
 
@@ -72,10 +67,6 @@ class Core:
             token=request.token, id=request.id
         )
 
-        application_response = (
-            ResponseContent()
-            if application is None
-            else ApplicationResponse(application=application)
-        )
+        application_response = BaseModel() if application is None else application
 
         return CoreResponse(status=status, response_content=application_response)

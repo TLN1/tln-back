@@ -1,5 +1,7 @@
-from dataclasses import dataclass, field
-from enum import Enum, auto
+from dataclasses import dataclass
+from enum import Enum
+
+from pydantic import BaseModel
 
 
 @dataclass
@@ -9,8 +11,7 @@ class Account:
     password: str
 
 
-@dataclass
-class Requirement:
+class Requirement(BaseModel):
     pass
 
 
@@ -32,16 +33,22 @@ class ExperienceLevel(Enum):
     LEAD = "lead"
 
 
-@dataclass
-class Benefit:
+class Benefit(BaseModel):
     pass
 
 
-@dataclass
-class Application:
+class Application(BaseModel):
     id: int
-    location: JobLocation = JobLocation.ON_SITE
-    job_type: JobType = JobType.FULL_TIME
-    experience_level: ExperienceLevel = ExperienceLevel.JUNIOR
-    requirements: list[Requirement] = field(default_factory=list)
-    benefits: list[Benefit] = field(default_factory=list)
+    location: JobLocation
+    job_type: JobType
+    experience_level: ExperienceLevel
+    requirements: list[Requirement]
+    benefits: list[Benefit]
+
+
+class ApplicationId(BaseModel):
+    application_id: int
+
+
+class Token(BaseModel):
+    token: str

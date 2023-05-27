@@ -1,9 +1,20 @@
+from typing import Any
+
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException, Response
 
 from app.core.constants import STATUS_HTTP_MAPPING
 from app.core.core import Core
-from app.core.models import Benefit, ExperienceLevel, JobLocation, JobType, Requirement
+from app.core.models import (
+    Application,
+    ApplicationId,
+    Benefit,
+    ExperienceLevel,
+    JobLocation,
+    JobType,
+    Requirement,
+    Token,
+)
 from app.core.requests import (
     CreateApplicationRequest,
     GetApplicationRequest,
@@ -11,19 +22,13 @@ from app.core.requests import (
     LogoutRequest,
     RegisterRequest,
 )
-from app.core.responses import (
-    ApplicationIdResponse,
-    ApplicationResponse,
-    CoreResponse,
-    ResponseContent,
-    TokenResponse,
-)
+from app.core.responses import CoreResponse
 from app.core.services.account_service import AccountService
 from app.core.services.application_service import ApplicationService
 from app.infra.application_context import InMemoryApplicationContext
 from app.infra.repository.account_repository import InMemoryAccountRepository
 from app.infra.repository.application_repository import InMemoryApplicationRepository
-from app.infra.token import Token
+from app.infra.token_generator import TokenGenerator
 
 app = FastAPI()
 
@@ -41,7 +46,7 @@ def get_core() -> Core:
         account_service=AccountService(
             account_repository=in_memory_account_repository,
             application_context=in_memory_application_context,
-            token_generator=Token.generate_token,
+            token_generator=TokenGenerator.generate_token,
         ),
         application_service=ApplicationService(
             application_repository=in_memory_application_repository,
@@ -68,11 +73,11 @@ def handle_response_status_code(
         201: {},
         500: {},
     },
-    response_model=TokenResponse,
+    response_model=Token,
 )
 def register(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
-) -> ResponseContent:
+) -> Any:
     """
     - Registers user
     - Returns token for subsequent requests
@@ -83,10 +88,10 @@ def register(
     return token_response.response_content
 
 
-@app.post("/login", response_model=TokenResponse)
+@app.post("/login", response_model=Token)
 def login(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
-) -> ResponseContent:
+) -> Any:
     """
     - Logs user in
     - Returns token for subsequent requests
@@ -97,16 +102,14 @@ def login(
     return token_response.response_content
 
 
-@app.post("/logout", response_model=ResponseContent)
-def logout(
-    response: Response, token: str, core: Core = Depends(get_core)
-) -> ResponseContent:
+@app.post("/logout")
+def logout(response: Response, token: str, core: Core = Depends(get_core)) -> Any:
     logout_response = core.logout(LogoutRequest(token))
     handle_response_status_code(response, logout_response)
     return logout_response.response_content
 
 
-@app.post("/application/create", response_model=ApplicationIdResponse)
+@app.post("/application/create", response_model=ApplicationId)
 def create_application(
     response: Response,
     token: str,
@@ -116,7 +119,7 @@ def create_application(
     requirements: list[Requirement],
     benefits: list[Benefit],
     core: Core = Depends(get_core),
-) -> ResponseContent:
+) -> Any:
     create_application_response = core.create_application(
         CreateApplicationRequest(
             token=token,
@@ -132,10 +135,10 @@ def create_application(
     return create_application_response.response_content
 
 
-@app.get("/application/get", response_model=ApplicationResponse)
+@app.get("/application/get", response_model=Application)
 def get_application(
     response: Response, token: str, application_id: int, core: Core = Depends(get_core)
-) -> ResponseContent:
+) -> Any:
     get_application_response = core.get_application(
         GetApplicationRequest(token=token, id=application_id)
     )

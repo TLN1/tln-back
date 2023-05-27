@@ -38,8 +38,8 @@ class InMemoryApplicationRepository(IApplicationRepository):
         self.applications[application_id] = application
         return application
 
-    def get_application(self, application_id: int) -> Optional[Application]:
-        return self.applications.get(application_id)
+    def get_application(self, id: int) -> Optional[Application]:
+        return self.applications.get(id)
 
     def _next_id(self) -> int:
         self._application_id += 1
