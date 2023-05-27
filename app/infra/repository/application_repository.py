@@ -17,6 +17,10 @@ class InMemoryApplicationRepository(IApplicationRepository):
     applications: dict[int, Application] = field(default_factory=dict)
     _application_id: int = 0
 
+    def _next_id(self) -> int:
+        self._application_id += 1
+        return self._application_id
+
     def create_application(
         self,
         location: JobLocation,
@@ -33,6 +37,7 @@ class InMemoryApplicationRepository(IApplicationRepository):
             experience_level=experience_level,
             requirements=requirements,
             benefits=benefits,
+            views=0,
         )
 
         self.applications[application_id] = application
@@ -41,6 +46,33 @@ class InMemoryApplicationRepository(IApplicationRepository):
     def get_application(self, id: int) -> Optional[Application]:
         return self.applications.get(id)
 
-    def _next_id(self) -> int:
-        self._application_id += 1
-        return self._application_id
+    def has_application(self, id: int) -> bool:
+        return self.get_application(id=id) is not None
+
+    def update_application(
+        self,
+        id: int,
+        location: JobLocation,
+        job_type: JobType,
+        experience_level: ExperienceLevel,
+        requirements: list[Requirement],
+        benefits: list[Benefit],
+    ) -> bool:
+        if not self.has_application(id=id):
+            return False
+
+        self.applications[id].update(
+            location=location,
+            job_type=job_type,
+            experience_level=experience_level,
+            requirements=requirements,
+            benefits=benefits,
+        )
+        return True
+
+    def application_interaction(self, id: int) -> bool:
+        if not self.has_application(id=id):
+            return False
+
+        self.applications[id].views += 1
+        return True

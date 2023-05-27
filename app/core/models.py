@@ -1,11 +1,9 @@
-from dataclasses import dataclass
 from enum import Enum
 
 from pydantic import BaseModel
 
 
-@dataclass
-class Account:
+class Account(BaseModel):
     id: int
     username: str
     password: str
@@ -44,6 +42,21 @@ class Application(BaseModel):
     experience_level: ExperienceLevel
     requirements: list[Requirement]
     benefits: list[Benefit]
+    views: int
+
+    def update(
+        self,
+        location: JobLocation,
+        job_type: JobType,
+        experience_level: ExperienceLevel,
+        requirements: list[Requirement],
+        benefits: list[Benefit],
+    ) -> None:
+        self.location = location
+        self.job_type = job_type
+        self.experience_level = experience_level
+        self.requirements = requirements
+        self.benefits = benefits
 
 
 class ApplicationId(BaseModel):

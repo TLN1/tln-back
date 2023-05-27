@@ -1,7 +1,6 @@
-from typing import Any
-
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException, Response
+from pydantic import BaseModel
 
 from app.core.constants import STATUS_HTTP_MAPPING
 from app.core.core import Core
@@ -16,11 +15,13 @@ from app.core.models import (
     Token,
 )
 from app.core.requests import (
+    ApplicationInteractionRequest,
     CreateApplicationRequest,
     GetApplicationRequest,
     LoginRequest,
     LogoutRequest,
     RegisterRequest,
+    UpdateApplicationRequest,
 )
 from app.core.responses import CoreResponse
 from app.core.services.account_service import AccountService
@@ -77,7 +78,7 @@ def handle_response_status_code(
 )
 def register(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
-) -> Any:
+) -> BaseModel:
     """
     - Registers user
     - Returns token for subsequent requests
@@ -91,7 +92,7 @@ def register(
 @app.post("/login", response_model=Token)
 def login(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
-) -> Any:
+) -> BaseModel:
     """
     - Logs user in
     - Returns token for subsequent requests
@@ -103,7 +104,7 @@ def login(
 
 
 @app.post("/logout")
-def logout(response: Response, token: str, core: Core = Depends(get_core)) -> Any:
+def logout(response: Response, token: str, core: Core = Depends(get_core)) -> BaseModel:
     logout_response = core.logout(LogoutRequest(token))
     handle_response_status_code(response, logout_response)
     return logout_response.response_content
@@ -119,7 +120,11 @@ def create_application(
     requirements: list[Requirement],
     benefits: list[Benefit],
     core: Core = Depends(get_core),
-) -> Any:
+) -> BaseModel:
+    """
+    - Creates application
+    - Returns application id for subsequent requests
+    """
     create_application_response = core.create_application(
         CreateApplicationRequest(
             token=token,
@@ -135,13 +140,62 @@ def create_application(
     return create_application_response.response_content
 
 
-@app.get("/application/get", response_model=Application)
+@app.get("/application/get/{application_id}", response_model=Application)
 def get_application(
-    response: Response, token: str, application_id: int, core: Core = Depends(get_core)
-) -> Any:
+    response: Response, application_id: int, token: str, core: Core = Depends(get_core)
+) -> BaseModel:
+    """
+    - Obtains application with application id
+    """
     get_application_response = core.get_application(
         GetApplicationRequest(token=token, id=application_id)
     )
 
     handle_response_status_code(response, get_application_response)
     return get_application_response.response_content
+
+
+@app.put("/application/update/{application_id}")
+def update_application(
+    response: Response,
+    application_id: int,
+    token: str,
+    location: JobLocation,
+    job_type: JobType,
+    experience_level: ExperienceLevel,
+    requirements: list[Requirement],
+    benefits: list[Benefit],
+    core: Core = Depends(get_core),
+) -> BaseModel:
+    """
+    - Update application
+    """
+    update_application_response = core.update_application(
+        UpdateApplicationRequest(
+            token=token,
+            id=application_id,
+            location=location,
+            job_type=job_type,
+            experience_level=experience_level,
+            requirements=requirements,
+            benefits=benefits,
+        )
+    )
+
+    handle_response_status_code(response, update_application_response)
+    return update_application_response.response_content
+
+
+@app.put("/application/interaction/{application_id}")
+def application_interaction(
+    response: Response, application_id: int, token: str, core: Core = Depends(get_core)
+) -> BaseModel:
+    """
+    - Saves interaction with application
+    """
+    application_interaction_response = core.application_interaction(
+        ApplicationInteractionRequest(id=application_id, token=token)
+    )
+
+    handle_response_status_code(response, application_interaction_response)
+    return application_interaction_response.response_content

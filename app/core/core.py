@@ -5,17 +5,20 @@ from pydantic import BaseModel
 from app.core.constants import Status
 from app.core.models import ApplicationId, Token
 from app.core.requests import (
+    ApplicationInteractionRequest,
     CreateApplicationRequest,
     GetApplicationRequest,
     LoginRequest,
     LogoutRequest,
     RegisterRequest,
+    UpdateApplicationRequest,
 )
 from app.core.responses import CoreResponse
 from app.core.services.account_service import AccountService
 from app.core.services.application_service import ApplicationService
 
 
+# TODO remove authorization from service classes
 @dataclass
 class Core:
     account_service: AccountService
@@ -68,5 +71,24 @@ class Core:
         )
 
         application_response = BaseModel() if application is None else application
-
         return CoreResponse(status=status, response_content=application_response)
+
+    def update_application(self, request: UpdateApplicationRequest) -> CoreResponse:
+        status = self.application_service.update_application(
+            token=request.token,
+            id=request.id,
+            location=request.location,
+            job_type=request.job_type,
+            experience_level=request.experience_level,
+            requirements=request.requirements,
+            benefits=request.benefits,
+        )
+        return CoreResponse(status=status)
+
+    def application_interaction(
+        self, request: ApplicationInteractionRequest
+    ) -> CoreResponse:
+        status = self.application_service.application_interaction(
+            token=request.token, id=request.id
+        )
+        return CoreResponse(status=status)

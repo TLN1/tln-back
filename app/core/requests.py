@@ -37,5 +37,20 @@ class CreateApplicationRequest(TokenRequest):
 
 
 @dataclass
+class UpdateApplicationRequest(TokenRequest):
+    id: int
+    location: JobLocation = JobLocation.ON_SITE
+    job_type: JobType = JobType.FULL_TIME
+    experience_level: ExperienceLevel = ExperienceLevel.JUNIOR
+    requirements: list[Requirement] = field(default_factory=list)
+    benefits: list[Benefit] = field(default_factory=list)
+
+
+@dataclass
 class GetApplicationRequest(TokenRequest):
+    id: int
+
+
+@dataclass
+class ApplicationInteractionRequest(TokenRequest):
     id: int
