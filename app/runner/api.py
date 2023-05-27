@@ -17,6 +17,7 @@ from app.core.models import (
 from app.core.requests import (
     ApplicationInteractionRequest,
     CreateApplicationRequest,
+    DeleteApplicationRequest,
     GetApplicationRequest,
     LoginRequest,
     LogoutRequest,
@@ -199,3 +200,18 @@ def application_interaction(
 
     handle_response_status_code(response, application_interaction_response)
     return application_interaction_response.response_content
+
+
+@app.delete("/application/delete/{application_id}")
+def delete_application(
+    response: Response, application_id: int, token: str, core: Core = Depends(get_core)
+) -> BaseModel:
+    """
+    - Deletes application
+    """
+    delete_application_response = core.delete_application(
+        DeleteApplicationRequest(token=token, id=application_id)
+    )
+
+    handle_response_status_code(response, delete_application_response)
+    return delete_application_response.response_content

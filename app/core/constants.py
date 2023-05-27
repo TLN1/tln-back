@@ -12,6 +12,7 @@ class Status(Enum):
     APPLICATION_DOES_NOT_EXIST = "application does not exist"
     APPLICATION_UPDATE_ERROR = "application update failed"
     APPLICATION_INTERACTION_ERROR = "application interaction failed"
+    APPLICATION_DELETE_ERROR = "application deletion failed"
 
 
 class HttpResponseCode(IntEnum):

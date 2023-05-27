@@ -40,3 +40,6 @@ class IApplicationRepository(Protocol):
 
     def application_interaction(self, id: int) -> bool:
         pass
+
+    def delete_application(self, id: int) -> bool:
+        pass

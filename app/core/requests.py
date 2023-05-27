@@ -54,3 +54,8 @@ class GetApplicationRequest(TokenRequest):
 @dataclass
 class ApplicationInteractionRequest(TokenRequest):
     id: int
+
+
+@dataclass
+class DeleteApplicationRequest(TokenRequest):
+    id: int

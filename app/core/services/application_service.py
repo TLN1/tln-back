@@ -107,3 +107,18 @@ class ApplicationService:
             return Status.APPLICATION_INTERACTION_ERROR
 
         return Status.OK
+
+    def delete_application(self, token: str, id: int) -> Status:
+        username = self.application_context.get_account(token=token)
+        if username is None or not self.application_context.is_user_logged_in(
+            username=username
+        ):
+            return Status.USER_NOT_LOGGED_IN
+
+        if not self.application_repository.has_application(id=id):
+            return Status.APPLICATION_DOES_NOT_EXIST
+
+        if not self.application_repository.delete_application(id=id):
+            return Status.APPLICATION_DELETE_ERROR
+
+        return Status.OK

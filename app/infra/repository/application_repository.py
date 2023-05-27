@@ -76,3 +76,10 @@ class InMemoryApplicationRepository(IApplicationRepository):
 
         self.applications[id].views += 1
         return True
+
+    def delete_application(self, id: int) -> bool:
+        if not self.has_application(id=id):
+            return False
+
+        self.applications.pop(id)
+        return True

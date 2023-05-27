@@ -7,6 +7,7 @@ from app.core.models import ApplicationId, Token
 from app.core.requests import (
     ApplicationInteractionRequest,
     CreateApplicationRequest,
+    DeleteApplicationRequest,
     GetApplicationRequest,
     LoginRequest,
     LogoutRequest,
@@ -89,6 +90,12 @@ class Core:
         self, request: ApplicationInteractionRequest
     ) -> CoreResponse:
         status = self.application_service.application_interaction(
+            token=request.token, id=request.id
+        )
+        return CoreResponse(status=status)
+
+    def delete_application(self, request: DeleteApplicationRequest) -> CoreResponse:
+        status = self.application_service.delete_application(
             token=request.token, id=request.id
         )
         return CoreResponse(status=status)

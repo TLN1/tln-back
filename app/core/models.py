@@ -42,7 +42,7 @@ class Application(BaseModel):
     experience_level: ExperienceLevel
     requirements: list[Requirement]
     benefits: list[Benefit]
-    views: int
+    views: int = 0
 
     def update(
         self,
