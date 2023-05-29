@@ -8,9 +8,12 @@ from app.core.models import (
     Application,
     ApplicationId,
     Benefit,
+    Company,
     ExperienceLevel,
+    Industry,
     JobLocation,
     JobType,
+    OrganizationSize,
     Requirement,
     Token,
 )
@@ -25,19 +28,14 @@ from app.core.requests import (
     UpdateApplicationRequest,
 )
 from app.core.responses import CoreResponse
-from app.core.models import Company, Industry, OrganizationSize
-from app.core.requests import LoginRequest, LogoutRequest, RegisterRequest
-from app.core.responses import CoreResponse, TokenResponse
 from app.core.services.account_service import AccountService
-from app.core.services.company_service import CompanyService
 from app.core.services.application_service import ApplicationService
+from app.core.services.company_service import CompanyService
 from app.infra.application_context import InMemoryApplicationContext
-from app.infra.repository.account import InMemoryAccountRepository
-from app.infra.repository.company import InMemoryCompanyRepository
-from app.infra.token import Token
+from app.infra.token_generator import TokenGenerator
 from app.infra.repository.account_repository import InMemoryAccountRepository
 from app.infra.repository.application_repository import InMemoryApplicationRepository
-from app.infra.token_generator import TokenGenerator
+from app.infra.repository.company import InMemoryCompanyRepository
 
 app = FastAPI()
 
@@ -56,7 +54,7 @@ def get_core() -> Core:
         account_service=AccountService(
             account_repository=in_memory_account_repository,
             application_context=in_memory_application_context,
-            token_generator=Token.generate_token,
+            token_generator=TokenGenerator.generate_token,
         ),
         application_service=ApplicationService(
             application_repository=in_memory_application_repository,

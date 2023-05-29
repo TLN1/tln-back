@@ -3,10 +3,7 @@ from dataclasses import dataclass
 from pydantic import BaseModel
 
 from app.core.constants import Status
-from app.core.models import Industry, OrganizationSize
-from app.core.requests import LoginRequest, LogoutRequest, RegisterRequest
-from app.core.responses import CoreResponse, TokenResponse
-from app.core.models import ApplicationId, Token
+from app.core.models import ApplicationId, Industry, OrganizationSize, Token
 from app.core.requests import (
     ApplicationInteractionRequest,
     CreateApplicationRequest,
@@ -19,8 +16,8 @@ from app.core.requests import (
 )
 from app.core.responses import CoreResponse
 from app.core.services.account_service import AccountService
-from app.core.services.company_service import CompanyService
 from app.core.services.application_service import ApplicationService
+from app.core.services.company_service import CompanyService
 
 
 # TODO remove authorization from service classes

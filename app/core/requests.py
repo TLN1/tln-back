@@ -1,9 +1,15 @@
 from dataclasses import dataclass, field
 
-from app.core.models import Benefit, ExperienceLevel, JobLocation, JobType, Requirement
-
 # TODO maybe implement builder pattern for building requests
-from app.core.models import Industry, OrganizationSize
+from app.core.models import (
+    Benefit,
+    ExperienceLevel,
+    Industry,
+    JobLocation,
+    JobType,
+    OrganizationSize,
+    Requirement,
+)
 
 
 @dataclass

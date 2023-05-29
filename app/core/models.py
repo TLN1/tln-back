@@ -1,12 +1,9 @@
 from enum import Enum
-from dataclasses import dataclass, field
-from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
 
 # TODO: ADD VALUES
-
-
 class Industry(Enum):
     SOFTWARE_ENGINEERING = "Software Engineering"
 
@@ -23,14 +20,12 @@ class Company(BaseModel):
     industry: Industry
     organization_size: OrganizationSize
 
-from pydantic import BaseModel
-
 
 class Account(BaseModel):
     id: int
     username: str
     password: str
-    companies: list[int] = field(default_factory=list)
+    companies: list[int] = Field(default_factory=list)
 
     def link_company(self, company: Company) -> None:
         self.companies.append(company.id)
