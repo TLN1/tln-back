@@ -8,9 +8,6 @@ class IApplicationContext(Protocol):
     def get_account(self, token: str) -> Optional[str]:
         pass
 
-    def has_account(self, token: str) -> bool:
-        pass
-
     def login_user(self, username: str, token: str) -> None:
         pass
 

@@ -36,6 +36,7 @@ class AccountService:
         account = self.account_repository.create_account(
             username=username, password=password
         )
+
         status = Status.ACCOUNT_REGISTER_ERROR if account is None else Status.OK
 
         return status, account
