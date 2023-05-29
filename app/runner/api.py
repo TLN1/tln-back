@@ -8,9 +8,12 @@ from app.core.models import (
     Application,
     ApplicationId,
     Benefit,
+    Company,
     ExperienceLevel,
+    Industry,
     JobLocation,
     JobType,
+    OrganizationSize,
     Requirement,
     Token,
 )
@@ -27,10 +30,12 @@ from app.core.requests import (
 from app.core.responses import CoreResponse
 from app.core.services.account_service import AccountService
 from app.core.services.application_service import ApplicationService
+from app.core.services.company_service import CompanyService
 from app.infra.application_context import InMemoryApplicationContext
+from app.infra.token_generator import TokenGenerator
 from app.infra.repository.account_repository import InMemoryAccountRepository
 from app.infra.repository.application_repository import InMemoryApplicationRepository
-from app.infra.token_generator import TokenGenerator
+from app.infra.repository.company import InMemoryCompanyRepository
 
 app = FastAPI()
 
@@ -41,6 +46,7 @@ in_memory_account_repository = InMemoryAccountRepository()
 in_memory_application_repository = InMemoryApplicationRepository()
 
 in_memory_application_context = InMemoryApplicationContext()
+in_memory_company_repository = InMemoryCompanyRepository()
 
 
 def get_core() -> Core:
@@ -53,6 +59,9 @@ def get_core() -> Core:
         application_service=ApplicationService(
             application_repository=in_memory_application_repository,
             application_context=in_memory_application_context,
+        ),
+        company_service=CompanyService(
+            company_repository=in_memory_company_repository,
         ),
     )
 
@@ -215,3 +224,96 @@ def delete_application(
 
     handle_response_status_code(response, delete_application_response)
     return delete_application_response.response_content
+
+
+@app.post(
+    "/company",
+    responses={
+        200: {},
+        401: {},
+        500: {},
+    },
+    response_model=Company,
+)
+def create_company(
+    response: Response,
+    token: str,
+    name: str,
+    website: str,
+    industry: Industry,
+    organization_size: OrganizationSize,
+    core: Core = Depends(get_core),
+) -> BaseModel:
+    """
+    - Registers company
+    - Returns created company
+    """
+
+    company_response = core.create_company(
+        token=token,
+        name=name,
+        website=website,
+        industry=industry,
+        organization_size=organization_size,
+    )
+    handle_response_status_code(response, company_response)
+    return company_response.response_content
+
+
+# TODO: authenticate user
+@app.get(
+    "/company/{company_id}",
+    responses={
+        200: {},
+        404: {},
+    },
+    response_model=Company,
+)
+def get_company(
+    response: Response,
+    token: str,
+    company_id: int,
+    core: Core = Depends(get_core),
+) -> BaseModel:
+    company_response = core.get_company(company_id=company_id)
+    handle_response_status_code(response, company_response)
+    return company_response.response_content
+
+
+@app.put(
+    "/company/{company_id}",
+    responses={200: {}, 404: {}, 500: {}},
+    response_model=Company,
+)
+def update_company(
+    response: Response,
+    token: str,
+    company_id: int,
+    name: str,
+    website: str,
+    industry: Industry,
+    organization_size: OrganizationSize,
+    core: Core = Depends(get_core),
+) -> BaseModel:
+    company_response = core.update_company(
+        token=token,
+        company_id=company_id,
+        name=name,
+        website=website,
+        industry=industry,
+        organization_size=organization_size,
+    )
+    handle_response_status_code(response, company_response)
+
+    return company_response.response_content
+
+
+@app.delete(
+    "/company/{company_id}",
+    responses={200: {}, 404: {}, 500: {}},
+)
+def delete_company(
+    response: Response, token: str, company_id: int, core: Core = Depends(get_core)
+) -> None:
+    delete_response = core.delete_company(token=token, company_id=company_id)
+    handle_response_status_code(response, delete_response)

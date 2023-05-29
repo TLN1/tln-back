@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from app.core.models import Account
+from app.core.models import Account, Company
 from app.core.repository.account_repository import IAccountRepository
 
 
@@ -29,3 +29,11 @@ class InMemoryAccountRepository(IAccountRepository):
         return (
             username in self.accounts and self.accounts[username].password == password
         )
+
+    def link_company(self, username: str, company: Company) -> bool:
+        account = self.get_account(username)
+        if account is None:
+            return False
+
+        account.link_company(company)
+        return True
