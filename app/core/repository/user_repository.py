@@ -10,7 +10,7 @@ class IUserRepository(Protocol):
     def update_user(self, username: str, user: User) -> Optional[User]:
         pass
 
-    def get_user(self, username: str) -> User:
+    def get_user(self, username: str) -> Optional[User]:
         pass
 
     def has_user(self, username: str) -> bool:

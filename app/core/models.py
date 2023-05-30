@@ -3,31 +3,51 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 
-class Industry(BaseModel):
+# TODO: ADD VALUES
+class Industry(Enum):
+    SOFTWARE_ENGINEERING = "Software Engineering"
+
+
+# TODO: ADD VALUES
+class OrganizationSize(Enum):
+    SMALL = "1-10 employees"
+
+
+class JobLocation(Enum):
+    ON_SITE = "on-site"
+    REMOTE = "remote"
+
+
+class JobType(Enum):
+    PART_TIME = "part-time"
+    FULL_TIME = "full-time"
+
+
+class ExperienceLevel(Enum):
+    INTERN = "intern"
+    JUNIOR = "junior"
+    MIDDLE = "middle"
+    SENIOR = "senior"
+    LEAD = "lead"
+
+
+class Benefit(BaseModel):
+    pass
+
+
+class Company(BaseModel):
+    id: int
     name: str
-    description: str
-
-
-class JobType2(BaseModel):
-    name: str
-    description: str
-
-
-class EmploymentType2(BaseModel):
-    name: str
-    description: str
-
-
-class ExperienceLevel2(BaseModel):
-    name: str
-    description: str
+    website: str
+    industry: Industry
+    organization_size: OrganizationSize
 
 
 class Preference(BaseModel):
     industry: list[Industry] = Field(default_factory=list)
-    job_type: list[JobType2] = Field(default_factory=list)
-    employment_type: list[EmploymentType2] = Field(default_factory=list)
-    experience_level: list[ExperienceLevel2] = Field(default_factory=list)
+    job_location: list[JobLocation] = Field(default_factory=list)
+    job_type: list[JobType] = Field(default_factory=list)
+    experience_level: list[ExperienceLevel] = Field(default_factory=list)
 
 
 class Experience(BaseModel):
@@ -52,12 +72,13 @@ class User(BaseModel):
     experience: list[Experience] = Field(default_factory=list)
     preference: Preference = Preference()
 
-    def update(self,
-               education: list[Education],
-               skills: list[Skill],
-               experience: list[Experience],
-               preference: Preference
-    ):
+    def update(
+        self,
+        education: list[Education],
+        skills: list[Skill],
+        experience: list[Experience],
+        preference: Preference,
+    ) -> None:
         self.education = education
         self.skills = skills
         self.experience = experience
@@ -68,31 +89,13 @@ class Account(BaseModel):
     id: int
     username: str
     password: str
+    companies: list[int] = Field(default_factory=list)
+
+    def link_company(self, company: Company) -> None:
+        self.companies.append(company.id)
 
 
 class Requirement(BaseModel):
-    pass
-
-
-class JobLocation(Enum):
-    ON_SITE = "on-site"
-    REMOTE = "remote"
-
-
-class JobType(Enum):
-    PART_TIME = "part-time"
-    FULL_TIME = "full-time"
-
-
-class ExperienceLevel(Enum):
-    INTERN = "intern"
-    JUNIOR = "junior"
-    MIDDLE = "middle"
-    SENIOR = "senior"
-    LEAD = "lead"
-
-
-class Benefit(BaseModel):
     pass
 
 

@@ -16,7 +16,9 @@ class InMemoryUserRepository(IUserRepository):
     def update_user(self, username: str, user: User) -> Optional[User]:
         if not self.has_user(username=username):
             return None
-        self.users[username].update(user.education, user.skills, user.experience, user.preference)
+        self.users[username].update(
+            user.education, user.skills, user.experience, user.preference
+        )
         return user
 
     def get_user(self, username: str) -> Optional[User]:

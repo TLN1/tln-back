@@ -1,15 +1,16 @@
 from dataclasses import dataclass, field
 
+# TODO maybe implement builder pattern for building requests
 from app.core.models import (
     Benefit,
     ExperienceLevel,
+    Industry,
     JobLocation,
     JobType,
+    OrganizationSize,
     Requirement,
     User,
 )
-
-# TODO maybe implement builder pattern for building requests
 
 
 @dataclass
@@ -77,3 +78,12 @@ class ApplicationInteractionRequest(TokenRequest):
 @dataclass
 class DeleteApplicationRequest(TokenRequest):
     id: int
+
+
+@dataclass
+class CreateCompanyRequest:
+    token: str
+    name: str
+    website: str
+    industry: Industry
+    organization_size: OrganizationSize
