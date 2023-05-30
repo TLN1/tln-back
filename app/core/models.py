@@ -52,6 +52,17 @@ class User(BaseModel):
     experience: list[Experience] = Field(default_factory=list)
     preference: Preference = Preference()
 
+    def update(self,
+               education: list[Education],
+               skills: list[Skill],
+               experience: list[Experience],
+               preference: Preference
+    ):
+        self.education = education
+        self.skills = skills
+        self.experience = experience
+        self.preference = preference
+
 
 @dataclass
 class Account:

@@ -28,7 +28,7 @@ class UserService:
 
         updated_user = self.user_repository.update_user(username=username, user=user)
 
-        status = Status.USER_SETUP_ERROR if user is None else Status.OK
+        status = Status.USER_SETUP_ERROR if updated_user is None else Status.OK
 
         return status, updated_user
 
