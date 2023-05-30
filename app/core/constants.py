@@ -8,6 +8,7 @@ class Status(Enum):
     ACCOUNT_DOES_NOT_EXIST = "account does not exist"
     USER_ALREADY_LOGGED_IN = "user already logged in"
     USER_NOT_LOGGED_IN = "user not logged in"
+    USER_SETUP_ERROR = "user setup error"
     APPLICATION_CREATE_ERROR = "application creation error"
     APPLICATION_DOES_NOT_EXIST = "application does not exist"
     APPLICATION_UPDATE_ERROR = "application update failed"

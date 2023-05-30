@@ -9,6 +9,7 @@ from app.core.models import (
     JobType,
     OrganizationSize,
     Requirement,
+    User,
 )
 
 
@@ -27,6 +28,17 @@ class LoginRequest:
 @dataclass
 class TokenRequest:
     token: str
+
+
+@dataclass
+class GetUserRequest:
+    username: str
+
+
+@dataclass
+class SetupUserRequest:
+    username: str
+    user: User
 
 
 @dataclass

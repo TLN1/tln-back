@@ -13,28 +13,6 @@ class OrganizationSize(Enum):
     SMALL = "1-10 employees"
 
 
-class Company(BaseModel):
-    id: int
-    name: str
-    website: str
-    industry: Industry
-    organization_size: OrganizationSize
-
-
-class Account(BaseModel):
-    id: int
-    username: str
-    password: str
-    companies: list[int] = Field(default_factory=list)
-
-    def link_company(self, company: Company) -> None:
-        self.companies.append(company.id)
-
-
-class Requirement(BaseModel):
-    pass
-
-
 class JobLocation(Enum):
     ON_SITE = "on-site"
     REMOTE = "remote"
@@ -54,6 +32,70 @@ class ExperienceLevel(Enum):
 
 
 class Benefit(BaseModel):
+    pass
+
+
+class Company(BaseModel):
+    id: int
+    name: str
+    website: str
+    industry: Industry
+    organization_size: OrganizationSize
+
+
+class Preference(BaseModel):
+    industry: list[Industry] = Field(default_factory=list)
+    job_location: list[JobLocation] = Field(default_factory=list)
+    job_type: list[JobType] = Field(default_factory=list)
+    experience_level: list[ExperienceLevel] = Field(default_factory=list)
+
+
+class Experience(BaseModel):
+    name: str
+    description: str
+
+
+class Education(BaseModel):
+    name: str
+    description: str
+
+
+class Skill(BaseModel):
+    name: str
+    description: str
+
+
+class User(BaseModel):
+    username: str
+    education: list[Education] = Field(default_factory=list)
+    skills: list[Skill] = Field(default_factory=list)
+    experience: list[Experience] = Field(default_factory=list)
+    preference: Preference = Preference()
+
+    def update(
+        self,
+        education: list[Education],
+        skills: list[Skill],
+        experience: list[Experience],
+        preference: Preference,
+    ) -> None:
+        self.education = education
+        self.skills = skills
+        self.experience = experience
+        self.preference = preference
+
+
+class Account(BaseModel):
+    id: int
+    username: str
+    password: str
+    companies: list[int] = Field(default_factory=list)
+
+    def link_company(self, company: Company) -> None:
+        self.companies.append(company.id)
+
+
+class Requirement(BaseModel):
     pass
 
 
