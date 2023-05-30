@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from enum import Enum
 
 from pydantic import BaseModel, Field
 
@@ -8,26 +8,26 @@ class Industry(BaseModel):
     description: str
 
 
-class JobType(BaseModel):
+class JobType2(BaseModel):
     name: str
     description: str
 
 
-class EmploymentType(BaseModel):
+class EmploymentType2(BaseModel):
     name: str
     description: str
 
 
-class ExperienceLevel(BaseModel):
+class ExperienceLevel2(BaseModel):
     name: str
     description: str
 
 
 class Preference(BaseModel):
     industry: list[Industry] = Field(default_factory=list)
-    job_type: list[JobType] = Field(default_factory=list)
-    employment_type: list[EmploymentType] = Field(default_factory=list)
-    experience_level: list[ExperienceLevel] = Field(default_factory=list)
+    job_type: list[JobType2] = Field(default_factory=list)
+    employment_type: list[EmploymentType2] = Field(default_factory=list)
+    experience_level: list[ExperienceLevel2] = Field(default_factory=list)
 
 
 class Experience(BaseModel):
@@ -64,8 +64,65 @@ class User(BaseModel):
         self.preference = preference
 
 
-@dataclass
-class Account:
+class Account(BaseModel):
     id: int
     username: str
     password: str
+
+
+class Requirement(BaseModel):
+    pass
+
+
+class JobLocation(Enum):
+    ON_SITE = "on-site"
+    REMOTE = "remote"
+
+
+class JobType(Enum):
+    PART_TIME = "part-time"
+    FULL_TIME = "full-time"
+
+
+class ExperienceLevel(Enum):
+    INTERN = "intern"
+    JUNIOR = "junior"
+    MIDDLE = "middle"
+    SENIOR = "senior"
+    LEAD = "lead"
+
+
+class Benefit(BaseModel):
+    pass
+
+
+class Application(BaseModel):
+    id: int
+    location: JobLocation
+    job_type: JobType
+    experience_level: ExperienceLevel
+    requirements: list[Requirement]
+    benefits: list[Benefit]
+    views: int = 0
+
+    def update(
+        self,
+        location: JobLocation,
+        job_type: JobType,
+        experience_level: ExperienceLevel,
+        requirements: list[Requirement],
+        benefits: list[Benefit],
+    ) -> None:
+        self.location = location
+        self.job_type = job_type
+        self.experience_level = experience_level
+        self.requirements = requirements
+        self.benefits = benefits
+
+
+class ApplicationId(BaseModel):
+    application_id: int
+
+
+class Token(BaseModel):
+    token: str
