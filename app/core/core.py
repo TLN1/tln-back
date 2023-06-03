@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from pydantic import BaseModel
 
 from app.core.constants import Status
-from app.core.models import ApplicationId, Industry, OrganizationSize, Token
+from app.core.models import ApplicationId, Industry, OrganizationSize, InMemoryToken
 from app.core.requests import (
     ApplicationInteractionRequest,
     CreateApplicationRequest,
@@ -60,7 +60,7 @@ class Core:
             username=request.username, password=request.password
         )
 
-        token_response = BaseModel() if token is None else Token(token=token)
+        token_response = BaseModel() if token is None else InMemoryToken(token=token)
         return CoreResponse(status=status, response_content=token_response)
 
     def logout(self, request: LogoutRequest) -> CoreResponse:

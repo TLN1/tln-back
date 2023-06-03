@@ -1,5 +1,9 @@
+from datetime import timedelta
+from typing import Annotated
+
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Response
+from fastapi import Depends, FastAPI, HTTPException, Response, status
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
 from app.core.constants import STATUS_HTTP_MAPPING
@@ -19,8 +23,8 @@ from app.core.models import (
     Preference,
     Requirement,
     Skill,
-    Token,
-    User,
+    InMemoryToken,
+    User, Account, Token,
 )
 from app.core.requests import (
     ApplicationInteractionRequest,
@@ -39,7 +43,8 @@ from app.core.services.account_service import AccountService
 from app.core.services.application_service import ApplicationService
 from app.core.services.company_service import CompanyService
 from app.core.services.user_service import UserService
-from app.infra.application_context import InMemoryApplicationContext
+from app.infra.application_context import InMemoryApplicationContext, oauth2_scheme, get_current_user, fake_users_db, \
+    fake_hash_password, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from app.infra.repository.account_repository import InMemoryAccountRepository
 from app.infra.repository.application_repository import InMemoryApplicationRepository
 from app.infra.repository.company import InMemoryCompanyRepository
@@ -90,6 +95,29 @@ def handle_response_status_code(
         )
 
 
+@app.get("/users/me")
+async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+    return current_user
+
+
+@app.post("/token", response_model=Token)
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+):
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
 # TODO document response codes for other api methods
 @app.post(
     "/register",
@@ -97,7 +125,7 @@ def handle_response_status_code(
         201: {},
         500: {},
     },
-    response_model=Token,
+    response_model=InMemoryToken,
 )
 def register(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
@@ -112,7 +140,7 @@ def register(
     return token_response.response_content
 
 
-@app.post("/login", response_model=Token)
+@app.post("/login", response_model=InMemoryToken)
 def login(
     response: Response, username: str, password: str, core: Core = Depends(get_core)
 ) -> BaseModel:
