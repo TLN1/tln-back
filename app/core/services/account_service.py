@@ -12,6 +12,7 @@ class AccountService:
     account_repository: IAccountRepository
     application_context: IApplicationContext
     token_generator: Callable[[], str]
+    hash_function: Callable[[str], str]
 
     def get_account(self, token: str) -> tuple[Status, Optional[Account]]:
         username = self.application_context.get_account(token=token)
@@ -34,7 +35,7 @@ class AccountService:
             return Status.ACCOUNT_ALREADY_EXISTS, None
 
         account = self.account_repository.create_account(
-            username=username, password=password
+            username=username, password=self.hash_function(password)
         )
 
         status = Status.ACCOUNT_REGISTER_ERROR if account is None else Status.OK

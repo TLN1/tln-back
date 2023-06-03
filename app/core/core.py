@@ -39,20 +39,20 @@ class Core:
         if status != Status.OK or account is None:
             return CoreResponse(status=status)
 
-        login_response = self.login(
-            request=LoginRequest(username=account.username, password=account.password)
-        )
+        # login_response = self.login(
+        #     request=LoginRequest(username=account.username, password=account.password)
+        # )
+        #
+        # if login_response.status != Status.OK:
+        #     return CoreResponse(status=status)
 
-        if login_response.status != Status.OK:
-            return CoreResponse(status=status)
+        # status, _ = self.user_service.create_user(username=request.username)
 
-        status, _ = self.user_service.create_user(username=request.username)
-
-        if status != Status.OK:
-            return CoreResponse(status=status)
+        # if status != Status.OK:
+        #     return CoreResponse(status=status)
 
         return CoreResponse(
-            status=status, response_content=login_response.response_content
+            status=status, response_content=account  # login_response.response_content
         )
 
     def login(self, request: LoginRequest) -> CoreResponse:
