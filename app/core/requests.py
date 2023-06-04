@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 
 # TODO maybe implement builder pattern for building requests
 from app.core.models import (
+    Account,
     Benefit,
     ExperienceLevel,
     Industry,
@@ -26,8 +27,9 @@ class LoginRequest:
 
 
 @dataclass
-class TokenRequest:
-    token: str
+class AccountRequest:
+    # token: str
+    account: Account
 
 
 @dataclass
@@ -36,18 +38,17 @@ class GetUserRequest:
 
 
 @dataclass
-class SetupUserRequest:
-    username: str
+class SetupUserRequest(AccountRequest):
     user: User
 
 
 @dataclass
-class LogoutRequest(TokenRequest):
+class LogoutRequest(AccountRequest):
     pass
 
 
 @dataclass
-class CreateApplicationRequest(TokenRequest):
+class CreateApplicationRequest(AccountRequest):
     location: JobLocation = JobLocation.ON_SITE
     job_type: JobType = JobType.FULL_TIME
     experience_level: ExperienceLevel = ExperienceLevel.JUNIOR
@@ -56,7 +57,7 @@ class CreateApplicationRequest(TokenRequest):
 
 
 @dataclass
-class UpdateApplicationRequest(TokenRequest):
+class UpdateApplicationRequest(AccountRequest):
     id: int
     location: JobLocation = JobLocation.ON_SITE
     job_type: JobType = JobType.FULL_TIME
@@ -66,17 +67,17 @@ class UpdateApplicationRequest(TokenRequest):
 
 
 @dataclass
-class GetApplicationRequest(TokenRequest):
+class GetApplicationRequest(AccountRequest):
     id: int
 
 
 @dataclass
-class ApplicationInteractionRequest(TokenRequest):
+class ApplicationInteractionRequest(AccountRequest):
     id: int
 
 
 @dataclass
-class DeleteApplicationRequest(TokenRequest):
+class DeleteApplicationRequest(AccountRequest):
     id: int
 
 
