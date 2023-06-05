@@ -26,7 +26,7 @@ class ApplicationService:
         experience_level: ExperienceLevel,
         requirements: list[Requirement],
         benefits: list[Benefit],
-    ) -> tuple[Status, int | None]:
+    ) -> tuple[Status, Application | None]:
         application = self.application_repository.create_application(
             location=location,
             job_type=job_type,
@@ -38,7 +38,7 @@ class ApplicationService:
         if application is None:
             return Status.APPLICATION_CREATE_ERROR, None
 
-        return Status.OK, application.id
+        return Status.OK, application
 
     def get_application(self, id: int) -> tuple[Status, Application | None]:
         application = self.application_repository.get_application(id=id)

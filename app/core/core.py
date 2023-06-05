@@ -61,7 +61,7 @@ class Core:
         return CoreResponse(status=status, response_content=user)
 
     def create_application(self, request: CreateApplicationRequest) -> CoreResponse:
-        status, application_id = self.application_service.create_application(
+        status, application = self.application_service.create_application(
             account=request.account,
             location=request.location,
             job_type=request.job_type,
@@ -70,12 +70,17 @@ class Core:
             benefits=request.benefits,
         )
 
-        application_id_response = (
-            BaseModel()
-            if application_id is None
-            else ApplicationId(application_id=application_id)
+        if status != Status.OK or application is None:
+            return CoreResponse(status=status)
+
+        self.account_service.link_application(
+            account=request.account, application=application
         )
-        return CoreResponse(status=status, response_content=application_id_response)
+        # TODO link application with company
+
+        return CoreResponse(
+            status=status, response_content=ApplicationId(application_id=application.id)
+        )
 
     def get_application(self, request: GetApplicationRequest) -> CoreResponse:
         status, application = self.application_service.get_application(id=request.id)

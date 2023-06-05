@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from app.core.models import Account, Company
+from app.core.models import Account, Application, Company
 from app.core.repository.account_repository import IAccountRepository
 
 
@@ -35,4 +35,12 @@ class InMemoryAccountRepository(IAccountRepository):
             return False
 
         account.link_company(company)
+        return True
+
+    def link_application(self, username: str, application: Application) -> bool:
+        account = self.get_account(username)
+        if account is None:
+            return False
+
+        account.link_application(application)
         return True
