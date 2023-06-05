@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Optional
 
 from app.core.models import (
     Application,
@@ -28,7 +27,7 @@ class InMemoryApplicationRepository(IApplicationRepository):
         experience_level: ExperienceLevel,
         requirements: list[Requirement],
         benefits: list[Benefit],
-    ) -> Optional[Application]:
+    ) -> Application | None:
         application_id = self._next_id()
         application = Application(
             id=application_id,
@@ -43,7 +42,7 @@ class InMemoryApplicationRepository(IApplicationRepository):
         self.applications[application_id] = application
         return application
 
-    def get_application(self, id: int) -> Optional[Application]:
+    def get_application(self, id: int) -> Application | None:
         return self.applications.get(id)
 
     def has_application(self, id: int) -> bool:
@@ -57,7 +56,7 @@ class InMemoryApplicationRepository(IApplicationRepository):
         experience_level: ExperienceLevel,
         requirements: list[Requirement],
         benefits: list[Benefit],
-    ) -> Optional[Application]:
+    ) -> Application | None:
         if not self.has_application(id=id):
             return None
 

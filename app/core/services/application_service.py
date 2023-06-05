@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 from app.core.constants import Status
 from app.core.models import (
@@ -27,7 +26,7 @@ class ApplicationService:
         experience_level: ExperienceLevel,
         requirements: list[Requirement],
         benefits: list[Benefit],
-    ) -> tuple[Status, Optional[int]]:
+    ) -> tuple[Status, int | None]:
         application = self.application_repository.create_application(
             location=location,
             job_type=job_type,
@@ -41,7 +40,7 @@ class ApplicationService:
 
         return Status.OK, application.id
 
-    def get_application(self, id: int) -> tuple[Status, Optional[Application]]:
+    def get_application(self, id: int) -> tuple[Status, Application | None]:
         application = self.application_repository.get_application(id=id)
         if application is None:
             return Status.APPLICATION_DOES_NOT_EXIST, None
@@ -57,9 +56,9 @@ class ApplicationService:
         experience_level: ExperienceLevel,
         requirements: list[Requirement],
         benefits: list[Benefit],
-    ) -> tuple[Status, Optional[Application]]:
+    ) -> tuple[Status, Application | None]:
         if not self.application_repository.has_application(id=id):
-            return Status.APPLICATION_DOES_NOT_EXIST, None 
+            return Status.APPLICATION_DOES_NOT_EXIST, None
 
         application = self.application_repository.update_application(
             id=id,

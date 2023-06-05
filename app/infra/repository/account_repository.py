@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Optional
 
 from app.core.models import Account, Company
 from app.core.repository.account_repository import IAccountRepository
@@ -9,7 +8,7 @@ from app.core.repository.account_repository import IAccountRepository
 class InMemoryAccountRepository(IAccountRepository):
     accounts: dict[str, Account] = field(default_factory=dict)
 
-    def create_account(self, username: str, password: str) -> Optional[Account]:
+    def create_account(self, username: str, password: str) -> Account | None:
         account = Account(
             id=len(self.accounts) + 1,
             username=username,
@@ -19,7 +18,7 @@ class InMemoryAccountRepository(IAccountRepository):
         self.accounts[username] = account
         return account
 
-    def get_account(self, username: str) -> Optional[Account]:
+    def get_account(self, username: str) -> Account | None:
         return self.accounts.get(username)
 
     def has_account(self, username: str) -> bool:

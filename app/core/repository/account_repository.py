@@ -1,13 +1,13 @@
-from typing import Optional, Protocol
+from typing import Protocol
 
 from app.core.models import Account, Company
 
 
 class IAccountRepository(Protocol):
-    def create_account(self, username: str, password: str) -> Optional[Account]:
+    def create_account(self, username: str, password: str) -> Account | None:
         pass
 
-    def get_account(self, username: str) -> Optional[Account]:
+    def get_account(self, username: str) -> Account | None:
         pass
 
     def has_account(self, username: str) -> bool:

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 from app.core.constants import Status
 from app.core.models import Account, Company, Industry, OrganizationSize
@@ -10,7 +9,7 @@ from app.core.repository.company_repository import ICompanyRepository
 class CompanyService:
     company_repository: ICompanyRepository
 
-    def get_company(self, company_id: int) -> Optional[Company]:
+    def get_company(self, company_id: int) -> Company | None:
         return self.company_repository.get_company(company_id=company_id)
 
     def create_company(
@@ -19,7 +18,7 @@ class CompanyService:
         website: str,
         industry: Industry,
         organization_size: OrganizationSize,
-    ) -> tuple[Status, Optional[Company]]:
+    ) -> tuple[Status, Company | None]:
         company = self.company_repository.create_company(
             name=name,
             website=website,
@@ -39,7 +38,7 @@ class CompanyService:
         website: str,
         industry: Industry,
         organization_size: OrganizationSize,
-    ) -> tuple[Status, Optional[Company]]:
+    ) -> tuple[Status, Company | None]:
         if company_id not in account.companies:
             return Status.COMPANY_DOES_NOT_EXIST, None
 

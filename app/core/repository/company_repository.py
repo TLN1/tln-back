@@ -1,10 +1,10 @@
-from typing import Optional, Protocol
+from typing import Protocol
 
 from app.core.models import Company, Industry, OrganizationSize
 
 
 class ICompanyRepository(Protocol):
-    def get_company(self, company_id: int) -> Optional[Company]:
+    def get_company(self, company_id: int) -> Company | None:
         pass
 
     def create_company(
@@ -13,7 +13,7 @@ class ICompanyRepository(Protocol):
         website: str,
         industry: Industry,
         organization_size: OrganizationSize,
-    ) -> Optional[Company]:
+    ) -> Company | None:
         pass
 
     def update_company(
@@ -23,7 +23,7 @@ class ICompanyRepository(Protocol):
         website: str,
         industry: Industry,
         organization_size: OrganizationSize,
-    ) -> Optional[Company]:
+    ) -> Company | None:
         pass
 
     def delete_company(self, company_id: int) -> bool:
