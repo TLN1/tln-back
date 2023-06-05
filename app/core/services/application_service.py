@@ -58,6 +58,9 @@ class ApplicationService:
         requirements: list[Requirement],
         benefits: list[Benefit],
     ) -> Status:
+        if not self.application_repository.has_application(id=id):
+            return Status.APPLICATION_DOES_NOT_EXIST
+
         if not self.application_repository.update_application(
             id=id,
             location=location,
