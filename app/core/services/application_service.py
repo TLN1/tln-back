@@ -58,6 +58,9 @@ class ApplicationService:
         requirements: list[Requirement],
         benefits: list[Benefit],
     ) -> tuple[Status, Optional[Application]]:
+        if not self.application_repository.has_application(id=id):
+            return Status.APPLICATION_DOES_NOT_EXIST, None 
+
         application = self.application_repository.update_application(
             id=id,
             location=location,
@@ -68,7 +71,7 @@ class ApplicationService:
         )
 
         if application is None:
-            return Status.APPLICATION_DOES_NOT_EXIST, None
+            return Status.APPLICATION_UPDATE_ERROR, None
 
         return Status.OK, application
 
