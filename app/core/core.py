@@ -84,7 +84,7 @@ class Core:
         return CoreResponse(status=status, response_content=application_response)
 
     def update_application(self, request: UpdateApplicationRequest) -> CoreResponse:
-        status = self.application_service.update_application(
+        status, application = self.application_service.update_application(
             account=request.account,
             id=request.id,
             location=request.location,
@@ -93,7 +93,11 @@ class Core:
             requirements=request.requirements,
             benefits=request.benefits,
         )
-        return CoreResponse(status=status)
+
+        if status != Status.OK or application is None:
+            return CoreResponse(status=status)
+
+        return CoreResponse(status=status, response_content=application)
 
     def application_interaction(
         self, request: ApplicationInteractionRequest

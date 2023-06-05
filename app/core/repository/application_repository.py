@@ -35,7 +35,7 @@ class IApplicationRepository(Protocol):
         experience_level: ExperienceLevel,
         requirements: list[Requirement],
         benefits: list[Benefit],
-    ) -> bool:
+    ) -> Optional[Application]:
         pass
 
     def application_interaction(self, id: int) -> bool:

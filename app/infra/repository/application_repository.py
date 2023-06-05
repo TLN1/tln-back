@@ -57,9 +57,9 @@ class InMemoryApplicationRepository(IApplicationRepository):
         experience_level: ExperienceLevel,
         requirements: list[Requirement],
         benefits: list[Benefit],
-    ) -> bool:
+    ) -> Optional[Application]:
         if not self.has_application(id=id):
-            return False
+            return None
 
         self.applications[id].update(
             location=location,
@@ -68,7 +68,8 @@ class InMemoryApplicationRepository(IApplicationRepository):
             requirements=requirements,
             benefits=benefits,
         )
-        return True
+
+        return self.applications[id]
 
     def application_interaction(self, id: int) -> bool:
         if not self.has_application(id=id):

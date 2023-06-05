@@ -154,7 +154,10 @@ def register(
 
 @app.get("/user/{username}", response_model=User)
 def get_user(
-    response: Response, username: str, core: Core = Depends(get_core)
+    token: Annotated[str, Depends(oauth2_scheme)],
+    response: Response,
+    username: str,
+    core: Core = Depends(get_core),
 ) -> BaseModel:
     get_user_response = core.get_user(username=username)
     handle_response_status_code(response, get_user_response)
@@ -367,6 +370,7 @@ async def create_company(
 async def get_company(
     response: Response,
     company_id: int,
+    token: Annotated[str, Depends(oauth2_scheme)],
     core: Core = Depends(get_core),
 ) -> BaseModel:
     company_response = core.get_company(company_id=company_id)

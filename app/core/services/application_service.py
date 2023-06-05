@@ -57,18 +57,20 @@ class ApplicationService:
         experience_level: ExperienceLevel,
         requirements: list[Requirement],
         benefits: list[Benefit],
-    ) -> Status:
-        if not self.application_repository.update_application(
+    ) -> tuple[Status, Optional[Application]]:
+        application = self.application_repository.update_application(
             id=id,
             location=location,
             job_type=job_type,
             experience_level=experience_level,
             requirements=requirements,
             benefits=benefits,
-        ):
-            return Status.APPLICATION_UPDATE_ERROR
+        )
 
-        return Status.OK
+        if application is None:
+            return Status.APPLICATION_DOES_NOT_EXIST, None
+
+        return Status.OK, application
 
     def application_interaction(self, account: Account, id: int) -> Status:
         if not self.application_repository.has_application(id=id):
