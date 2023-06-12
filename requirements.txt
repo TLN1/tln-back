@@ -11,3 +11,7 @@ coverage
 types-orjson
 types-requests
 types-ujson
+python-multipart
+python-jose
+passlib
+bcrypt

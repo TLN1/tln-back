@@ -9,6 +9,7 @@ class Status(Enum):
     USER_ALREADY_LOGGED_IN = "user already logged in"
     USER_NOT_LOGGED_IN = "user not logged in"
     USER_SETUP_ERROR = "user setup error"
+    USER_NOT_FOUND = "User not found"
     APPLICATION_CREATE_ERROR = "application creation error"
     APPLICATION_DOES_NOT_EXIST = "application does not exist"
     APPLICATION_UPDATE_ERROR = "application update failed"
@@ -40,4 +41,5 @@ STATUS_HTTP_MAPPING = {
     Status.ERROR_CREATING_COMPANY: HttpResponseCode.SERVER_ERROR,
     Status.COMPANY_DOES_NOT_EXIST: HttpResponseCode.NOT_FOUND,
     Status.ERROR_DELETING_COMPANY: HttpResponseCode.SERVER_ERROR,
+    Status.USER_NOT_FOUND: HttpResponseCode.NOT_FOUND,
 }

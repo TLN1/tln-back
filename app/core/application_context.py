@@ -1,14 +1,16 @@
-from typing import Optional, Protocol
+from typing import Any, Protocol
+
+from app.core.models import Account
 
 
 class IApplicationContext(Protocol):
-    def is_user_logged_in(self, username: str) -> bool:
+    def authenticate_user(self, username: str, password: str) -> Account:
         pass
 
-    def get_account(self, token: str) -> Optional[str]:
+    def create_access_token(self, account: Account) -> str:
         pass
 
-    def login_user(self, username: str, token: str) -> None:
+    async def get_current_user(self, token: Any) -> Account:
         pass
 
     def logout_user(self, token: str) -> None:
