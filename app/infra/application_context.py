@@ -62,9 +62,6 @@ class InMemoryOauthApplicationContext(IApplicationContext):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
 
-    def __verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        return self.hash_verifier(plain_password, hashed_password)
-
     def authenticate_user(self, username: str, password: str) -> Account:
         authentication_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -76,7 +73,7 @@ class InMemoryOauthApplicationContext(IApplicationContext):
 
         if user is None:
             raise authentication_exception
-        if not self.__verify_password(password, user.password):
+        if not self.hash_verifier(password, user.password):
             raise authentication_exception
 
         return user
