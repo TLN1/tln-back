@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
 from app.core.models import Account, Application, Company
-from app.core.repository.account_repository import IAccountRepository
+from app.core.repository.account import IAccountRepository
 
 
 @dataclass

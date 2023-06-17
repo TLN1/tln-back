@@ -14,10 +14,10 @@ from app.core.requests import (
     UpdateApplicationRequest,
 )
 from app.core.responses import CoreResponse
-from app.core.services.account_service import AccountService
-from app.core.services.application_service import ApplicationService
-from app.core.services.company_service import CompanyService
-from app.core.services.user_service import UserService
+from app.core.services.account import AccountService
+from app.core.services.application import ApplicationService
+from app.core.services.company import CompanyService
+from app.core.services.user import UserService
 
 
 @dataclass
@@ -61,6 +61,10 @@ class Core:
         return CoreResponse(status=status, response_content=user)
 
     def create_application(self, request: CreateApplicationRequest) -> CoreResponse:
+        get_company_response = self.get_company(request.company_id)
+        if get_company_response.status != Status.OK:
+            return get_company_response
+
         status, application = self.application_service.create_application(
             account=request.account,
             location=request.location,
@@ -71,12 +75,14 @@ class Core:
         )
 
         if status != Status.OK or application is None:
-            return CoreResponse(status=status)
+            return CoreResponse(status)
 
         self.account_service.link_application(
             account=request.account, application=application
         )
-        # TODO link application with company
+        self.company_service.link_application(
+            company_id=request.company_id, application=application
+        )
 
         return CoreResponse(
             status=status, response_content=ApplicationId(application_id=application.id)

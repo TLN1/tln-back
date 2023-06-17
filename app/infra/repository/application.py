@@ -8,7 +8,7 @@ from app.core.models import (
     JobType,
     Requirement,
 )
-from app.core.repository.application_repository import IApplicationRepository
+from app.core.repository.application import IApplicationRepository
 
 
 @dataclass

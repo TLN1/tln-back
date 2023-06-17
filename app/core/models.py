@@ -43,6 +43,10 @@ class Company(BaseModel):
     website: str
     industry: Industry
     organization_size: OrganizationSize
+    applications: list[int] = Field(default_factory=list)
+
+    def link_application(self, application: Application) -> None:
+        self.applications.append(application.id)
 
 
 class Preference(BaseModel):

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
 from app.core.models import User
-from app.core.repository.user_repository import IUserRepository
+from app.core.repository.user import IUserRepository
 
 
 @dataclass

@@ -3,7 +3,7 @@ from typing import Callable
 
 from app.core.constants import Status
 from app.core.models import Account, Application, Company
-from app.core.repository.account_repository import IAccountRepository
+from app.core.repository.account import IAccountRepository
 
 
 @dataclass

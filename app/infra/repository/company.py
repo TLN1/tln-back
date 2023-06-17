@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
-from app.core.models import Company, Industry, OrganizationSize
-from app.core.repository.company_repository import ICompanyRepository
+from app.core.models import Application, Company, Industry, OrganizationSize
+from app.core.repository.company import ICompanyRepository
 
 
 @dataclass
@@ -58,5 +58,13 @@ class InMemoryCompanyRepository(ICompanyRepository):
         if company_to_delete is not None:
             self.companies.remove(company_to_delete)
             return True
+
+        return False
+
+    def link_application(self, company_id: int, application: Application) -> bool:
+        for company in self.companies:
+            if company.id == company_id:
+                company.link_application(application)
+                return True
 
         return False

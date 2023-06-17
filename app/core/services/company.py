@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 from app.core.constants import Status
-from app.core.models import Account, Company, Industry, OrganizationSize
-from app.core.repository.company_repository import ICompanyRepository
+from app.core.models import Account, Application, Company, Industry, OrganizationSize
+from app.core.repository.company import ICompanyRepository
 
 
 @dataclass
@@ -61,3 +61,11 @@ class CompanyService:
         if self.company_repository.delete_company(company_id=company_id):
             return Status.OK
         return Status.ERROR_DELETING_COMPANY
+
+    def link_application(self, company_id: int, application: Application) -> Status:
+        if not self.company_repository.link_application(
+            company_id=company_id, application=application
+        ):
+            return Status.APPLICATION_CREATE_ERROR
+
+        return Status.OK

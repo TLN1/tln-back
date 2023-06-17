@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from app.core.constants import Status
 from app.core.models import Account, User
-from app.core.repository.user_repository import IUserRepository
+from app.core.repository.user import IUserRepository
 
 
 @dataclass
